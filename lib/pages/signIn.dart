@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pfe_mobile_app/pages/chefProjet/etage_details.dart';
 
 import '../custom_Widgets/sign_in-button.dart';
+import '../services/api_Client.dart';
+import 'chefProjet/list_projet.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
@@ -12,12 +15,12 @@ class SignInPage extends StatelessWidget {
         title: const Text('Chef de Projet'),
         elevation: 2.0, // shadow dessus la Bare
       ),
-      body: _buildContent(),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -37,7 +40,7 @@ class SignInPage extends StatelessWidget {
             text: ' Entrer vos données ',
             textColor: Colors.white,
             onPressed: () {
-              _signInWithGoogle();
+              ApiClient.getProjets('/chefprojets/1/projets');
             },
             color: Colors.teal[700],
           ),
@@ -52,18 +55,14 @@ class SignInPage extends StatelessWidget {
             text: 'Go Anonymous (Test purpose) ',
             textColor: Colors.black,
             onPressed: () {
-              _signInWithGoogle();
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const ListProjet()),
+              );
             },
             color: Colors.lime[300],
           ),
         ],
       ),
     );
-  }
-
-  void _signInWithGoogle() {
-    int a = 15;
-
-    print(a);
   }
 }
