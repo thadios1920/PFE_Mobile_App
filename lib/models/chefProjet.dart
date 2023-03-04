@@ -1,23 +1,48 @@
 class ChefProjet {
-  final String id;
-  final String imagePath;
-  final String nom;
-  final String email;
-  final String prenom;
-  final int numTel;
-  final int cin;
-  final String password;
-  final bool isDarkMode;
+  int? id;
+  String? nom;
+  String? prenom;
+  String? imageURL;
+  String? numTel;
+  String? password;
+  String? cin;
+  String? createdAt;
+  String? updatedAt;
 
-  const ChefProjet({
-    required this.id,
-    required this.imagePath,
-    required this.numTel,
-    required this.cin,
-    required this.password,
-    required this.nom,
-    required this.email,
-    required this.prenom,
-    required this.isDarkMode,
-  });
+  ChefProjet(
+      {this.id,
+      this.nom,
+      this.prenom,
+      this.imageURL,
+      this.numTel,
+      this.password,
+      this.cin,
+      this.createdAt,
+      this.updatedAt});
+
+  ChefProjet.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    nom = json['nom'];
+    prenom = json['prenom'];
+    imageURL = json['imageURL'];
+    numTel = json['numTel'];
+    password = json['password'];
+    cin = json['cin'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['nom'] = nom;
+    data['prenom'] = prenom;
+    data['imageURL'] = imageURL;
+    data['numTel'] = numTel;
+    data['password'] = password;
+    data['cin'] = cin;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    return data;
+  }
 }

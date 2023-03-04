@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pfe_mobile_app/pages/chefProjet/etage_details.dart';
+import 'package:pfe_mobile_app/pages/login_page.dart';
 
 import '../custom_Widgets/sign_in-button.dart';
 import '../services/api_Client.dart';
@@ -40,7 +41,9 @@ class SignInPage extends StatelessWidget {
             text: ' Entrer vos données ',
             textColor: Colors.white,
             onPressed: () {
-              ApiClient.getProjets('/chefprojets/1/projets');
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
             },
             color: Colors.teal[700],
           ),
@@ -56,7 +59,7 @@ class SignInPage extends StatelessWidget {
             textColor: Colors.black,
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ListProjet()),
+                MaterialPageRoute(builder: (context) => ListProjet()),
               );
             },
             color: Colors.lime[300],

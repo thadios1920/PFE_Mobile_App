@@ -2,101 +2,256 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+import 'models/zone.dart';
 
+class ImageZoningPage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _ImageZoningPageState createState() => _ImageZoningPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ImageZoningPageState extends State<ImageZoningPage> {
   File? _image;
-  List<Rect> _rects = [];
-  int _selectedZoneIndex = -1;
+  final List<Rect> _zones = [];
   Offset? _start;
   Offset? _end;
+  int _selectedZoneIndex = -1;
+  final List<Rect> _rects = [];
+
+  List<Zone> _getZones() {
+    List<Zone> zones = [
+      Zone(x: 10, y: 10, width: 100, height: 50),
+      Zone(x: 50, y: 80, width: 150, height: 100),
+      Zone(x: 200, y: 150, width: 80, height: 60),
+    ];
+    return zones;
+  }
+
+  void _showMessage(int index) {
+    // Afficher un message en fonction de l'index de la zone cliquée
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Zone ${index + 1}'),
+        content: Text('Vous avez cliqué sur la zone ${index + 1}'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<void> _getImage() async {
-    final imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = File(pickedFile!.path);
-    });
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        _zones.clear();
+        _zones.addAll(_getZones().map((zone) => Rect.fromLTWH(
+            zone.x!.toDouble(),
+            zone.y!.toDouble(),
+            zone.width!.toDouble(),
+            zone.height!.toDouble())));
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Image Zones'),
+        title: const Text('Image Zoning'),
       ),
-      body: GestureDetector(
-        onPanStart: (details) {
-          _start = details.localPosition;
-          setState(() {
-            _selectedZoneIndex = -1;
-          });
-        },
-        onPanEnd: (details) {
-          _end = details.velocity.pixelsPerSecond;
-          if (_start != null && _end != null) {
-            final renderBox = context.findRenderObject() as RenderBox;
-            final startLocal = renderBox.globalToLocal(_start!);
-            final endLocal = renderBox.globalToLocal(_end!);
-            setState(() {
-              _rects.add(Rect.fromPoints(startLocal, endLocal));
-              _start = null;
-              _end = null;
-            });
-          }
-        },
-        onPanUpdate: (details) {
-          _end = details.localPosition;
-          setState(() {});
-        },
-        child: Stack(
-          children: <Widget>[
-            if (_image != null)
-              Image.file(
-                _image!,
-                fit: BoxFit.cover,
-              ),
-            ..._rects.asMap().entries.map((entry) {
-              final index = entry.key;
-              final rect = entry.value;
-              return Positioned.fromRect(
-                rect: rect,
-                child: Stack(
-                  children: [
-                    if (_selectedZoneIndex == index)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.2),
-                          border: Border.all(
-                            color: Colors.blue.withOpacity(0.8),
-                            width: 2,
-                          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            if (_image != null) ...[
+              GestureDetector(
+                  onTapUp: (details) {
+                    // Parcourir toutes les zones et vérifier si le clic est à l'intérieur de l'une d'entre elles
+                    for (int i = 0; i < _zones.length; i++) {
+                      if (_zones[i].contains(details.localPosition)) {
+                        _showMessage(i);
+                        break;
+                      }
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      Image.file(_image!),
+                      GestureDetector(
+                        onPanStart: (details) {
+                          _start = details.localPosition;
+                          setState(() {
+                            _selectedZoneIndex = -1;
+                          });
+                        },
+                        onPanEnd: (details) {
+                          if (_start != null && _end != null) {
+                            final renderBox =
+                                context.findRenderObject() as RenderBox;
+                            final startLocal = renderBox.globalToLocal(_start!);
+                            final endLocal = renderBox.globalToLocal(_end!);
+                            setState(() {
+                              _rects.add(Rect.fromPoints(startLocal, endLocal));
+                              _start = null;
+                              _end = null;
+                            });
+                          }
+                        },
+                        onPanUpdate: (details) {
+                          _end = details.localPosition;
+                          setState(() {});
+                        },
+                        child: Stack(
+                          children: <Widget>[
+                            if (_image != null)
+                              Image.file(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ),
+                            ..._rects.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final rect = entry.value;
+                              return Positioned.fromRect(
+                                rect: rect,
+                                child: Stack(
+                                  children: [
+                                    if (_selectedZoneIndex == index)
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.withOpacity(0.2),
+                                          border: Border.all(
+                                            color: Colors.blue.withOpacity(0.8),
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    GestureDetector(
+                                      onPanStart: (details) {
+                                        _start = details.localPosition;
+                                        setState(() {
+                                          _selectedZoneIndex = index;
+                                        });
+                                      },
+                                      onPanEnd: (details) {
+                                        _start = null;
+                                        _end = null;
+                                      },
+                                      onPanUpdate: (details) {
+                                        _end = details.localPosition;
+                                        if (_start != null && _end != null) {
+                                          final renderBox = context
+                                              .findRenderObject() as RenderBox;
+                                          final startLocal =
+                                              renderBox.globalToLocal(_start!);
+                                          final endLocal =
+                                              renderBox.globalToLocal(_end!);
+                                          setState(() {
+                                            _rects[index] = Rect.fromPoints(
+                                                startLocal, endLocal);
+                                          });
+                                        }
+                                      },
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text('Zone $index'),
+                                              content: Form(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Type',
+                                                      ),
+                                                    ),
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Nom',
+                                                      ),
+                                                    ),
+                                                    TextFormField(
+                                                      onChanged: (value) {},
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Matiere',
+                                                      ),
+                                                    ),
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Hauteur',
+                                                      ),
+                                                    ),
+                                                    TextFormField(
+                                                      decoration:
+                                                          const InputDecoration(
+                                                        labelText: 'Largeur',
+                                                      ),
+                                                    ),
+                                                    ElevatedButton(
+                                                      onPressed: () {},
+                                                      child: const Text(
+                                                          'Soumettre'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.transparent,
+                                          border: Border.all(
+                                            color:
+                                                Colors.yellow.withOpacity(0.8),
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ],
                         ),
                       ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedZoneIndex = index;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: FloatingActionButton(
-                onPressed: _getImage,
-                tooltip: 'Pick Image',
-                child: Icon(Icons.add_a_photo),
-              ),
+                      ..._zones.asMap().entries.map((entry) {
+                        final int index = entry.key;
+                        final Rect zone = entry.value;
+                        return Positioned(
+                          left: zone.left,
+                          top: zone.top,
+                          width: zone.width,
+                          height: zone.height,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.blue, width: 2),
+                            ),
+                            child: Text('Zone ${index + 1}'),
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                  )),
+            ],
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _getImage,
+              icon: const Icon(Icons.image),
+              label: const Text('Choisir une image'),
             ),
           ],
         ),
