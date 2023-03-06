@@ -1,15 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:http/http.dart' as http;
+import '../../models/element.dart' as element;
 
 import 'models/zone.dart';
 
 class ImageZoningPage extends StatefulWidget {
+  int idEtage;
+  ImageZoningPage({super.key, required this.idEtage});
+
   @override
   _ImageZoningPageState createState() => _ImageZoningPageState();
 }
 
 class _ImageZoningPageState extends State<ImageZoningPage> {
+  int idEtage = 0;
   File? _image;
   final List<Rect> _zones = [];
   Offset? _start;
@@ -23,6 +29,7 @@ class _ImageZoningPageState extends State<ImageZoningPage> {
       Zone(x: 50, y: 80, width: 150, height: 100),
       Zone(x: 200, y: 150, width: 80, height: 60),
     ];
+
     return zones;
   }
 
@@ -36,12 +43,38 @@ class _ImageZoningPageState extends State<ImageZoningPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    // _getImage();
+  }
+
+  // Future<void> _getImage() async {
+  //   try {
+  //     final response = await http.get(Uri.parse(
+  //         'http://192.168.1.12:8080/public/uploads/wp2691434.jpg-1677613550295.jpeg'));
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         _image = File.fromRawPath(response.bodyBytes);
+  //         _zones.clear();
+  //         _zones.addAll(_getZones().map((zone) => Rect.fromLTWH(
+  //             zone.x!.toDouble(),
+  //             zone.y!.toDouble(),
+  //             zone.width!.toDouble(),
+  //             zone.height!.toDouble())));
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
 
   Future<void> _getImage() async {
     final pickedFile =

@@ -11,17 +11,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Future<void> getPlans() async {
-    try {
-      Plan plan = await ApiClient.getPlan("/etages/1/plan");
-      print('plan:{$plan}');
-    } catch (e) {
-      print(e);
-    }
-
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   );
                 },
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 60.0),
+                  margin: const EdgeInsets.symmetric(horizontal: 60.0),
                   alignment: Alignment.center,
                   height: 45.0,
                   decoration: BoxDecoration(
@@ -111,9 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
                   child: GestureDetector(
-                    onTap: () {
-                      getPlans();
-                    },
+                    onTap: () {},
                     child: Container(
                       alignment: Alignment.center,
                       color: Theme.of(context).primaryColor,

@@ -69,17 +69,21 @@ class ApiClient {
     for (var v in data) {
       tempList.add(v);
     }
-    return element.Element.elementFromJSON(tempList);
+    if (response.statusCode == 200 && tempList.isNotEmpty) {
+      return element.Element.elementFromJSON(tempList);
+    } else {
+      throw Exception('Failed to load elements');
+    }
   }
 
   // GET method retourne les projet du chef projet inscrit
-  static Future<Plan> getPlan(String api) async {
+  static Future getPlan(String api) async {
     var url = Uri.parse(baseUrl + api);
     var response = await http.get(url);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
-      return Plan.planFromJSON(data);
+      return (data);
     } else {
       throw Exception('Failed to load Plan');
     }

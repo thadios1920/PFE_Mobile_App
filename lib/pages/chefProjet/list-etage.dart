@@ -1,12 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:pfe_mobile_app/image.dart';
 import 'package:pfe_mobile_app/models/chantier.dart';
 import '../../models/element.dart' as element;
 
 import '../../custom_Widgets/posts_carousel.dart';
 import '../../models/etage.dart';
-import '../../models/plan.dart';
 import '../../services/api_Client.dart';
 
 class ListEtage extends StatefulWidget {
@@ -25,7 +24,7 @@ class _ListEtageState extends State<ListEtage>
   Chantier chantier = Chantier();
   List<element.Element> elementsList = [];
   List<Etage> etagesList = [];
-  List<Plan> planList = [];
+  List planList = [];
 
   String id = "";
   var isLoaded = false;
@@ -41,84 +40,86 @@ class _ListEtageState extends State<ListEtage>
 
   Future<void> getEtages() async {
     etagesList = await ApiClient.getEtages("/chantiers/$id/etages");
-    setState(() {});
 
     if (etagesList.isNotEmpty) {
       await getPlans();
+      // await getElements();
+      setState(() {});
     }
   }
 
-// Fonction qui remplie une liste des plans des etages
   Future<void> getPlans() async {
     try {
-      // print(etagesList.length);
       for (var i = 0; i < etagesList.length; i++) {
-        // print("in the loop");
-        Plan plan = await ApiClient.getPlan("/etages/${etagesList[i].id}/plan");
-        // print('plan:$plan');
-        planList[i] = plan;
+        var plan = await ApiClient.getPlan("/etages/${etagesList[i].id}/plan");
+
+        setState(() {
+          planList.add(plan);
+        });
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
-
-    setState(() {});
 
     if (elementsList.isNotEmpty) {
       isLoaded = true;
     }
   }
 
-  // Future<void> getElements() async {
-  //   elementsList = await ApiClient.getElements("/etages/$id/elements");
-  //   try {
-  //     // print(etagesList.length);
-  //     for (var i = 0; i < etagesList.length; i++) {
-  //       // print("in the loop");
-  //       List<element.Element> element = await ApiClient.getElements("/etages/${etagesList[i].id}/plan");
-  //       // print('plan:$plan');
-  //       elementsList[i] = element;
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
+// Fonction qui remplie une liste des plans des etages
 
-  //   setState(() {});
+  Future<List<element.Element>> getElements(i) async {
+    // try {
 
-  //   if (elementsList.isNotEmpty) {
-  //     isLoaded = true;
-  //   }
-  // }
+    List<element.Element> elementlist =
+        await ApiClient.getElements("/etages/${etagesList[i].id}/elements");
+    setState(() {});
+    return elementlist;
+    // } catch (e) {
+    //   print(e);
+    // }
 
-  // _build() {
-  //   return Scaffold(
-  //     body: SingleChildScrollView(
-  //         child: Center(
-  //       child: ListView.builder(
-  //         scrollDirection: Axis.vertical,
-  //         shrinkWrap: true,
-  //         itemCount: etagesList.length,
-  //         itemBuilder: (context, index) {
-  //           return GestureDetector(
-  //             onTap: () {
-  //               Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(builder: (context) => ImageZoningPage()),
-  //               );
-  //             },
-  //             child: Container(
-  //               height: 100,
-  //               width: 100,
-  //               color: Colors.grey,
-  //               child: Center(
-  //                   child: Image.network(planList[index].imageUrl ?? "")),
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     )),
-  //   );
-  // }
+    if (elementsList.isNotEmpty) {
+      isLoaded = true;
+    }
+  }
+
+  _build() {
+    return Scaffold(
+      body: SingleChildScrollView(
+          child: Center(
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: planList.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                // ignore: use_build_context_synchronously
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => ImageZoningPage(
+                            idEtage: etagesList[index].id!,
+                          )),
+                );
+              },
+              child: Container(
+                height: 100,
+                width: 100,
+                color: Colors.grey,
+                child: Center(
+                    child: Image.network(planList[index]['imageUrl'] ?? "")),
+                // child: Text("plan")),
+              ),
+            );
+          },
+        ),
+      )),
+    );
+  }
 
   _buildListEtage() {
     return Scaffold(
@@ -163,12 +164,12 @@ class _ListEtageState extends State<ListEtage>
             etages: etagesList,
             plans: planList,
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ImageZoningPage(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (_) => ImageZoningPage(),
+              //   ),
+              // );
             },
           ),
         ],

@@ -8,7 +8,7 @@ class PostsCarousel extends StatelessWidget {
   final String title;
   final List<Etage> etages;
   final VoidCallback onPressed;
-  final List<Plan> plans;
+  final List plans;
 
   const PostsCarousel(
       {super.key,
@@ -20,7 +20,7 @@ class PostsCarousel extends StatelessWidget {
 
   _buildPost(BuildContext context, int index) {
     Etage etage = etages[index];
-    // Plan imageUrl = plans[index];
+    var imageUrl = plans[index];
     return AnimatedBuilder(
       animation: pageController,
       builder: (BuildContext context, Widget? widget) {
@@ -56,7 +56,7 @@ class PostsCarousel extends StatelessWidget {
                 height: 400.0,
                 width: 300.0,
                 image:
-                    AssetImage("assets/images/plan1.png"), //imageUrl.imageUrl!
+                    NetworkImage(imageUrl['imageUrl']!), //imageUrl['imageUrl']
                 fit: BoxFit.cover,
               ),
             ),
@@ -163,7 +163,7 @@ class PostsCarousel extends StatelessWidget {
           height: 400.0,
           child: PageView.builder(
             controller: pageController,
-            itemCount: etages.length,
+            itemCount: plans.length,
             itemBuilder: (BuildContext context, int index) {
               return _buildPost(context, index);
             },

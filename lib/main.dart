@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pfe_mobile_app/pages/chefProjet/create_task.dart';
 import 'package:pfe_mobile_app/pages/login_page.dart';
 import 'pages/signIn.dart';
 
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'MAS',
       theme: ThemeData(primarySwatch: Colors.indigo),
       home: Scaffold(
-        body: LoginScreen(),
+        body: CreateTask(),
         // bottomNavigationBar: BottomNavigationBar(items: const [
         //   BottomNavigationBarItem(icon: Icon(Icons.home), label: "Projets"),
         //   BottomNavigationBarItem(icon: Icon(Icons.add), label: "Taches"),
