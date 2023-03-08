@@ -32,8 +32,6 @@ class _ListProjetState extends State<ListProjet> {
     }
   }
 
-  final rand = Random();
-
   final List<double> weeklySpending = [10, 15, 25, 14, 45, 12, 78];
 
   _buildCategory(Projet projet, double totalAmountSpent) {
@@ -73,13 +71,14 @@ class _ListProjetState extends State<ListProjet> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                // Text(
-                //   '\$${projet.createdAt} / \$${projet.endDate}',
-                //   style: const TextStyle(
-                //     fontSize: 18.0,
-                //     fontWeight: FontWeight.w600,
-                //   ),
-                // ),
+                Text(
+                  '${projet.lieu}',
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.redAccent,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 10.0),
@@ -122,31 +121,9 @@ class _ListProjetState extends State<ListProjet> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
+    return Container(
+      child: CustomScrollView(
         slivers: <Widget>[
-          SliverAppBar(
-            forceElevated: true,
-            floating: true,
-
-            // pinned: true,
-            expandedHeight: 100.0,
-            leading: IconButton(
-              icon: const Icon(Icons.settings),
-              iconSize: 30.0,
-              onPressed: () {},
-            ),
-            flexibleSpace: const FlexibleSpaceBar(
-              title: Text('Les Projets'),
-            ),
-            actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.add),
-                iconSize: 30.0,
-                onPressed: () {},
-              ),
-            ],
-          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
