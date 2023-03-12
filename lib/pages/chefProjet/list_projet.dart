@@ -34,7 +34,7 @@ class _ListProjetState extends State<ListProjet> {
 
   final List<double> weeklySpending = [10, 15, 25, 14, 45, 12, 78];
 
-  _buildCategory(Projet projet, double totalAmountSpent) {
+  _buildCategory(Projet projet) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -145,10 +145,8 @@ class _ListProjetState extends State<ListProjet> {
                   );
                 } else {
                   final Projet projet = projets[index - 1];
-                  // category.expenses?.forEach((Expense expense) {
-                  //   totalAmountSpent += expense.cost;
-                  // });
-                  return _buildCategory(projet, 2);
+
+                  return _buildCategory(projet);
                 }
               },
               childCount: 1 + projets.length,

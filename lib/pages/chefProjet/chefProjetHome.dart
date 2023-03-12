@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pfe_mobile_app/pages/chefProjet/chefProjetHeader.dart';
 import 'package:pfe_mobile_app/pages/chefProjet/create_task.dart';
 import 'package:pfe_mobile_app/pages/chefProjet/list_projet.dart';
+import 'package:pfe_mobile_app/pages/chefProjet/taskListPage.dart';
+
+import '../settings.dart';
 
 class ChefProjetHome extends StatefulWidget {
   const ChefProjetHome({super.key});
@@ -18,17 +21,20 @@ class _ChefProjetHomeState extends State<ChefProjetHome> {
     var container;
     if (currentPage == DrawerSections.dashboard) {
       container = ListProjet();
-    } else if (currentPage == DrawerSections.contacts) {
-      container = CreateTask();
     }
+    // else if (currentPage == DrawerSections.contacts) {
+    //   container = CreateTask();
+    // }
     // else if (currentPage == DrawerSections.events) {
     //   container = EventsPage();
     // }
     //else if (currentPage == DrawerSections.notes) {
     //   container = NotesPage();
-    // } else if (currentPage == DrawerSections.settings) {
-    //   container = SettingsPage();
-    // } else if (currentPage == DrawerSections.notifications) {
+    //}
+    else if (currentPage == DrawerSections.settings) {
+      container = ProfileEditPage();
+    }
+    // else if (currentPage == DrawerSections.notifications) {
     //   container = NotificationsPage();
     // } else if (currentPage == DrawerSections.privacy_policy) {
     //   container = PrivacyPolicyPage();
@@ -38,46 +44,44 @@ class _ChefProjetHomeState extends State<ChefProjetHome> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo[800],
-        title: Text("MasTech"),
+        title: const Text("MasTech"),
       ),
       body: container,
       drawer: Drawer(
         child: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: [
-                ChefProjetHeader(),
-                MyDrawerList(),
-              ],
-            ),
+          child: Column(
+            children: [
+              const ChefProjetHeader(),
+              DrawerList(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget MyDrawerList() {
+  Widget DrawerList() {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 15,
       ),
       child: Column(
         // shows the list of menu drawer
         children: [
-          menuItem(1, "Dashboard", Icons.dashboard_outlined,
+          menuItem(1, "Projets", Icons.dashboard_outlined,
               currentPage == DrawerSections.dashboard ? true : false),
-          menuItem(2, "Contacts", Icons.people_alt_outlined,
+          menuItem(2, "Taches", Icons.people_alt_outlined,
               currentPage == DrawerSections.contacts ? true : false),
           menuItem(3, "Events", Icons.event,
               currentPage == DrawerSections.events ? true : false),
           menuItem(4, "Notes", Icons.notes,
               currentPage == DrawerSections.notes ? true : false),
-          Divider(),
-          menuItem(5, "Settings", Icons.settings_outlined,
+          const Divider(),
+          menuItem(5, "Paramaitre", Icons.settings_outlined,
               currentPage == DrawerSections.settings ? true : false),
           menuItem(6, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
-          Divider(),
+          const Divider(),
           menuItem(7, "Privacy policy", Icons.privacy_tip_outlined,
               currentPage == DrawerSections.privacy_policy ? true : false),
           menuItem(8, "Send feedback", Icons.feedback_outlined,
@@ -114,7 +118,7 @@ class _ChefProjetHomeState extends State<ChefProjetHome> {
           });
         },
         child: Padding(
-          padding: EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(15.0),
           child: Row(
             children: [
               Expanded(
@@ -128,7 +132,7 @@ class _ChefProjetHomeState extends State<ChefProjetHome> {
                 flex: 3,
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 16,
                   ),

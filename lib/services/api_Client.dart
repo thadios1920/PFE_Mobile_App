@@ -74,6 +74,20 @@ class ApiClient {
     return Etage.etageFromJSON(tempList);
   }
 
+  static Future<List<Tache>> getTaches(String api) async {
+    var url = Uri.parse(baseUrl + api);
+    var response = await http.get(url);
+
+    // print("response ${jsonDecode(response.body)}");
+
+    var data = jsonDecode(response.body);
+    List tempList = [];
+    for (var v in data) {
+      tempList.add(v);
+    }
+    return Tache.tacheFromJSON(tempList);
+  }
+
   // GET method retourne les projet du chef projet inscrit
   static Future<List<element.Element>> getElements(String api) async {
     var url = Uri.parse(baseUrl + api);

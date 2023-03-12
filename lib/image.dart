@@ -7,8 +7,8 @@ import '../../models/element.dart' as element;
 import 'models/zone.dart';
 
 class ImageZoningPage extends StatefulWidget {
-  int idEtage;
-  ImageZoningPage({super.key, required this.idEtage});
+  // int idEtage;
+  ImageZoningPage({super.key});
 
   @override
   _ImageZoningPageState createState() => _ImageZoningPageState();

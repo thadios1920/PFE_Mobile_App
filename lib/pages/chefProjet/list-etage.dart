@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pfe_mobile_app/image.dart';
 import 'package:pfe_mobile_app/models/chantier.dart';
+import 'package:pfe_mobile_app/pages/chefProjet/taskListPage.dart';
 import '../../models/element.dart' as element;
 
 import '../../custom_Widgets/posts_carousel.dart';
@@ -18,16 +19,21 @@ class ListEtage extends StatefulWidget {
 
 class _ListEtageState extends State<ListEtage>
     with SingleTickerProviderStateMixin {
+  int _currentIndex = 0;
   late TabController _tabController;
   late PageController _pageController;
 
-  Chantier chantier = Chantier();
   List<element.Element> elementsList = [];
   List<Etage> etagesList = [];
   List planList = [];
 
   String id = "";
   var isLoaded = false;
+  setCurrentIndex(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   void initState() {
@@ -70,110 +76,71 @@ class _ListEtageState extends State<ListEtage>
 
 // Fonction qui remplie une liste des plans des etages
 
-  Future<List<element.Element>> getElements(i) async {
-    // try {
+  // Future<List<element.Element>> getElements(i) async {
+  //   // try {
 
-    List<element.Element> elementlist =
-        await ApiClient.getElements("/etages/${etagesList[i].id}/elements");
-    setState(() {});
-    return elementlist;
-    // } catch (e) {
-    //   print(e);
-    // }
+  //   List<element.Element> elementlist =
+  //       await ApiClient.getElements("/etages/${etagesList[i].id}/elements");
+  //   setState(() {});
+  //   return elementlist;
+  //   // } catch (e) {
+  //   //   print(e);
+  //   // }
 
-    if (elementsList.isNotEmpty) {
-      isLoaded = true;
-    }
-  }
-
-  _build() {
-    return Scaffold(
-      body: SingleChildScrollView(
-          child: Center(
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: planList.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                // ignore: use_build_context_synchronously
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => ImageZoningPage(
-                            idEtage: etagesList[index].id!,
-                          )),
-                );
-              },
-              child: Container(
-                height: 100,
-                width: 100,
-                color: Colors.grey,
-                child: Center(
-                    child: Image.network(planList[index]['imageUrl'] ?? "")),
-                // child: Text("plan")),
-              ),
-            );
-          },
-        ),
-      )),
-    );
-  }
+  //   if (elementsList.isNotEmpty) {
+  //     isLoaded = true;
+  //   }
+  // }
 
   _buildListEtage() {
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.white10,
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
         title: Text(
-          chantier.nom ?? "",
-          style: TextStyle(
-            color: Theme.of(context).primaryColor,
+          widget.chantier.nom ?? "",
+          style: const TextStyle(
+            color: Colors.white,
             fontWeight: FontWeight.bold,
             letterSpacing: 10.0,
           ),
         ),
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorWeight: 3.0,
-          // labelColor: Theme.of(context).primaryColor,
-          labelStyle: const TextStyle(
-            fontSize: 18.0,
-            fontWeight: FontWeight.w600,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 18.0,
-          ),
-          tabs: const <Widget>[
-            Tab(text: 'Les etages'),
-            Tab(text: 'Ajouter une tache'),
-          ],
-        ),
+
         // systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       // drawer: CustomDrawer(),
-      body: ListView(
-        children: <Widget>[
-          // FollowingUsers(),
-          PostsCarousel(
-            pageController: _pageController,
-            title: 'Etages',
-            etages: etagesList,
-            plans: planList,
-            onPressed: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (_) => ImageZoningPage(),
-              //   ),
-              // );
-            },
-          ),
-        ],
-      ),
+      body: [
+        ListView(
+          children: <Widget>[
+            // FollowingUsers(),
+            PostsCarousel(
+              pageController: _pageController,
+              title: 'Etages',
+              etages: etagesList,
+              plans: planList,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ImageZoningPage(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        TodoListPage(idChantier: widget.chantier.id.toString())
+      ][_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            setCurrentIndex(index);
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Plans"),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: "Taches"),
+          ]),
     );
   }
 

@@ -29,7 +29,7 @@ class _ChefProjetHeaderState extends State<ChefProjetHeader> {
             ),
           ),
           Text(
-            "Rapid Tech",
+            "Chef 1",
             style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           Text(

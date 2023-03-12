@@ -103,34 +103,34 @@ class PostsCarousel extends StatelessWidget {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(width: 6.0),
-                            Text(
-                              etage.numero.toString(),
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                              ),
-                            ),
+                            // const Icon(
+                            //   Icons.favorite,
+                            //   color: Colors.red,
+                            // ),
+                            // const SizedBox(width: 6.0),
+                            // Text(
+                            //   etage.numero.toString(),
+                            //   style: const TextStyle(
+                            //     fontSize: 18.0,
+                            //   ),
+                            // ),
                           ],
                         ),
-                        Row(
-                          children: <Widget>[
-                            Icon(
-                              Icons.comment,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            SizedBox(width: 6.0),
-                            Text(
-                              etage.numero.toString(),
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                              ),
-                            ),
-                          ],
-                        )
+                        // Row(
+                        //   children: <Widget>[
+                        //     Icon(
+                        //       Icons.comment,
+                        //       color: Theme.of(context).primaryColor,
+                        //     ),
+                        //     SizedBox(width: 6.0),
+                        //     Text(
+                        //       etage.numero.toString(),
+                        //       style: const TextStyle(
+                        //         fontSize: 18.0,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // )
                       ],
                     ),
                   ],
@@ -161,13 +161,18 @@ class PostsCarousel extends StatelessWidget {
         ),
         Container(
           height: 400.0,
-          child: PageView.builder(
-            controller: pageController,
-            itemCount: plans.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _buildPost(context, index);
-            },
-          ),
+          child: plans.isEmpty
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.blue,
+                ))
+              : PageView.builder(
+                  controller: pageController,
+                  itemCount: plans.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _buildPost(context, index);
+                  },
+                ),
         ),
       ],
     );
